@@ -17,30 +17,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Home, BookOpen, LayoutDashboard, User, Mail, LogOut, ChevronDownIcon } from "lucide-react";
+import { Home, BookOpen, LayoutDashboard, User, LogOut, ChevronDownIcon } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { authClient } from '@/lib/auth-client';
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { useSignOut } from "@/hooks/use-signout";
 
 export default function Navbar() {
-  const router = useRouter();
+
   const { data: session, isPending } = authClient.useSession();
-
-  async function handleSignOut() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-          toast.success("Signed out successfully!");
-        },
-      },
-    });
-  }
-
-  console.log("Navbar session:", session);
+  const handleSignOut = useSignOut();
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -73,7 +60,7 @@ export default function Navbar() {
           </motion.div>
           {session && (
             <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
-              <Link href="/dashboard" className="flex items-center gap-2 transition-colors text-foreground hover:text-primary">
+              <Link href="/admin" className="flex items-center gap-2 transition-colors text-foreground hover:text-primary">
                 <LayoutDashboard size={20} />
                 Dashboard
               </Link>
